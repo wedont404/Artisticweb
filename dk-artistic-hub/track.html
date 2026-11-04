@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Track your order - DK ARTISTIC HUB</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Track your DK Artistic Hub order live.">
+<meta name="theme-color" content="#4d3844">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body style="padding-bottom:30px">
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Back to the menu"><span class="logo">DK</span><span class="brand-name">ARTISTIC <b>HUB</b></span></a>
+  <div class="tools">
+    <a class="btn ghost sm" href="index.html">&larr; Menu</a>
+    <button class="tool" id="vibeBtn" aria-label="Change vibe">&#127912;</button>
+    <button class="tool" id="themeBtn" aria-label="Toggle dark or light">&#127769;</button>
+  </div>
+</header>
+
+<main class="sec" style="max-width:820px">
+  <h2>Track your order</h2>
+
+  <form class="card" id="lookup" novalidate>
+    <label for="tOrder" style="margin-top:0">Order number</label>
+    <input id="tOrder" placeholder="DK-2026-00001" autocomplete="off" autocapitalize="characters" maxlength="16">
+    <label for="tPhone">Phone number used when ordering</label>
+    <input id="tPhone" type="tel" inputmode="tel" placeholder="0788 123 456" autocomplete="tel" maxlength="20">
+    <p class="err" id="tErr" role="alert"></p>
+    <button class="btn primary wide" id="tBtn" type="submit">Track order</button>
+  </form>
+
+  <section id="result" hidden>
+    <div class="card" style="margin-top:18px">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <div><div class="muted small">Order</div><h3 id="rNum" style="margin:0"></h3></div>
+        <div class="row"><span class="chip" id="rStatus"></span><span class="chip" id="rPay"></span></div>
+      </div>
+
+      <div id="waiting" hidden>
+        <p style="margin-top:14px" id="waitMsg"></p>
+      </div>
+
+      <div id="trackBox" hidden>
+        <div class="track" id="stepper" aria-label="Order progress"></div>
+        <p class="center" id="etaLine"></p>
+        <p class="center muted small" id="updLine"></p>
+      </div>
+    </div>
+
+    <div id="detail" hidden>
+      <div class="card" style="margin-top:18px" id="mapCard">
+        <h3>Delivery map</h3>
+        <p class="muted small" id="mapNote"></p>
+        <div class="mapbox" id="tMap" style="height:300px"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>Your order</h3>
+        <table class="tbl" id="itemsTbl"></table>
+        <dl class="kv" style="margin-top:12px" id="sums"></dl>
+        <div class="box" id="payHelp" style="margin-top:14px" hidden></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>Progress log</h3>
+        <ul class="tl" id="log"></ul>
+      </div>
+    </div>
+    <p class="center muted small" style="margin-top:16px" id="refreshNote"></p>
+  </section>
+</main>
+
+<footer class="foot"><p><a href="terms.html" style="color:var(--accent);font-weight:700">Terms &amp; Conditions</a></p>
+  <p class="made">This website was happily made by <b id="creditName"></b></p><p class="muted small">&copy; <span id="year"></span> DK ARTISTIC HUB</p></footer>
+<div class="toast" id="toast" role="status"></div>
+<script src="assets/core.js"></script>
+<script src="assets/track.js"></script>
+</body>
+</html>

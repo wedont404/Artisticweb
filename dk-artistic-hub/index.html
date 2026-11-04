@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DK ARTISTIC HUB - Street Food, Brochettes &amp; Cocktails in Masoro, Kigali</title>
+<meta name="description" content="Order brochettes, burgers, fries, beers and cocktails from DK Artistic Hub in Masoro, Kigali. Delivery, pickup or dine-in. Pay with MTN Mobile Money and track your order live.">
+<meta name="theme-color" content="#4d3844">
+<meta property="og:title" content="DK ARTISTIC HUB - Order street food in Kigali">
+<meta property="og:description" content="Pick it. Order it. Track it. Brochettes, burgers, fries, beers and cocktails in Masoro.">
+<meta property="og:type" content="restaurant">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Restaurant","name":"DK ARTISTIC HUB","servesCuisine":["Street food","Brochettes","Burgers"],"telephone":"+250782292053","address":{"@type":"PostalAddress","addressLocality":"Masoro, Kigali","addressCountry":"RW"},"geo":{"@type":"GeoCoordinates","latitude":-1.93246,"longitude":30.14608},"openingHours":"Mo-Su 10:00-23:00","priceRange":"RWF","acceptsReservations":false}
+</script>
+</head>
+<body>
+
+<div id="preloader" aria-hidden="true"><div class="pre-logo">DK</div><div class="pre-bar"><span></span></div></div>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="top">
+  <a class="brand" href="#home" aria-label="DK Artistic Hub home">
+    <span class="logo" id="logoTap">DK</span><span class="brand-name">ARTISTIC <b>HUB</b></span>
+  </a>
+  <nav class="nav" aria-label="Main">
+    <a href="#menu">Menu</a><a href="#fun">Play</a><a href="#visit">Visit</a><a href="track.html">Track order</a>
+  </nav>
+  <div class="tools">
+    <button class="tool" id="vibeBtn" title="Change vibe" aria-label="Change vibe">&#127912;</button>
+    <button class="tool" id="themeBtn" title="Dark or light" aria-label="Toggle dark or light">&#127769;</button>
+    <button class="tool" id="sizeBtn" title="Bigger text" aria-label="Bigger text">Aa</button>
+    <button class="cart-btn" id="cartBtn" aria-label="Open cart">&#128722; <span id="cartCount">0</span></button>
+  </div>
+</header>
+
+<main id="home">
+<section class="hero" id="heroSec">
+  <span class="float f1" data-depth="26">&#127842;</span><span class="float f2" data-depth="40">&#127839;</span>
+  <span class="float f3" data-depth="18">&#127865;</span><span class="float f4" data-depth="34">&#127828;</span><span class="float f5" data-depth="12">&#10024;</span>
+  <div class="hero-in">
+    <p class="pill">&#128293; Masoro's street food haven</p>
+    <h1><span>Hungry for</span><span class="rot" id="rot">Brochettes</span></h1>
+    <p class="lead">Pick it. Order it. Track it. Fresh, fast and full of flavour, delivered across Kigali.</p>
+    <div class="cta">
+      <a class="btn primary" href="#menu">Order now</a>
+      <button class="btn ghost" id="surpriseTop">&#127922; Surprise me</button>
+    </div>
+  </div>
+  <div class="scene" id="scene" aria-label="Spin the menu. Drag to rotate">
+    <div class="stage" id="stage"><div class="ring" id="ring"></div></div>
+  </div>
+  <div class="live">
+    <span class="chip-info" id="openChip"><i class="dot"></i><span id="openTxt">Checking hours...</span></span>
+    <span class="chip-info" id="happyChip">&#127865; <span id="happyTxt"></span></span>
+    <span class="chip-info">&#128205; <span id="areaTxt"></span></span>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true"><div class="ticker-in">
+  <span>&#127842; BROCHETTES</span><span>&#127828; BURGERS</span><span>&#127839; LOADED FRIES</span><span>&#127866; ICE COLD BEERS</span><span>&#127865; COCKTAILS</span><span>&#128293; STREET VIBES</span>
+  <span>&#127842; BROCHETTES</span><span>&#127828; BURGERS</span><span>&#127839; LOADED FRIES</span><span>&#127866; ICE COLD BEERS</span><span>&#127865; COCKTAILS</span><span>&#128293; STREET VIBES</span>
+</div></div>
+
+<section class="sec" id="menu">
+  <h2 class="reveal">Our street menu</h2>
+  <div class="menu-tools">
+    <input id="search" type="search" placeholder="Search food or drinks..." aria-label="Search menu">
+    <div class="cats" id="cats" role="tablist" aria-label="Categories"></div>
+  </div>
+  <p class="muted small" id="menuNote" hidden></p>
+  <div class="grid" id="grid" aria-live="polite"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+</section>
+
+<section class="sec" id="fun">
+  <h2 class="reveal">Can't decide? Let's play</h2>
+  <div class="bento">
+    <div class="card reveal">
+      <h3>What's your mood?</h3>
+      <div class="moods" id="moods">
+        <button data-mood="hungry">&#128293; Starving</button><button data-mood="chill">&#127867; Chilling</button>
+        <button data-mood="party">&#127881; Party</button><button data-mood="snack">&#127839; Snacky</button>
+      </div>
+      <button class="btn primary wide" id="surprise">&#127922; Surprise me</button>
+    </div>
+    <div class="card reveal result-card" id="result" aria-live="polite">
+      <div class="dice">&#127922;</div><p class="muted">Pick a mood or hit the dice. We'll choose for you.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="how">
+  <h2 class="reveal">Order in 3 taps</h2>
+  <div class="steps">
+    <div class="card step reveal"><b>1</b><h3>Pick your food</h3><p>Add items to your cart, choose delivery, pickup or dine-in.</p></div>
+    <div class="card step reveal"><b>2</b><h3>Pin your spot</h3><p>Drop a pin on the map so the rider finds you exactly.</p></div>
+    <div class="card step reveal"><b>3</b><h3>Pay and track</h3><p>Pay with MTN Mobile Money or cash, then follow your order live.</p></div>
+  </div>
+  <div class="card pay reveal">
+    <div>
+      <p class="pill">&#128179; MTN Mobile Money</p>
+      <h3 style="margin-top:10px">Pay with this code</h3>
+      <div class="code" id="ussdText"></div>
+      <p class="muted small">Pay after we confirm your order and total. Keep the MoMo SMS as proof.</p>
+    </div>
+    <div class="pay-btns">
+      <a class="btn primary" id="dialBtn" href="#">&#128222; Dial to pay</a>
+      <button class="btn ghost" id="copyBtn">&#128203; Copy code</button>
+      <a class="btn ghost" href="track.html">&#128666; Track my order</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="visit">
+  <h2 class="reveal">Come hang out</h2>
+  <div class="bento three">
+    <div class="card reveal"><h3>&#128205; Where</h3><p id="vArea"></p><p class="muted small" id="vPlus"></p><a class="btn ghost" id="mapBtn" target="_blank" rel="noopener">Open in Google Maps</a></div>
+    <div class="card reveal"><h3>&#128346; Hours</h3><p id="vHours"></p><p class="muted small">&#127865; Happy hour: <span id="vHappy"></span></p></div>
+    <div class="card reveal"><h3>&#128222; Call or WhatsApp</h3><p id="vPhone"></p><div class="row"><a class="btn ghost" id="callBtn">Call</a><a class="btn primary" id="waBtn" target="_blank" rel="noopener">WhatsApp</a></div></div>
+  </div>
+  <div class="mapbox reveal" id="visitMap" aria-label="Map of DK Artistic Hub"></div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-brand">DK ARTISTIC <b>HUB</b></div>
+  <p class="muted">Street food. Good vibes. Kigali.</p>
+  <p><a href="terms.html" style="color:var(--accent);font-weight:700">Terms &amp; Conditions</a></p>
+  <p class="made">This website was happily made by <b id="creditName"></b></p>
+  <p class="muted small">&copy; <span id="year"></span> DK ARTISTIC HUB</p>
+</footer>
+
+<button class="fab" id="fab" aria-label="Open cart"><span id="fabCount">0</span> &#128722; <b id="fabTotal">0 RWF</b></button>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Your order" aria-hidden="true">
+  <div class="drawer-head"><h3 id="drawerTitle">Your cart</h3><button class="x" id="closeCart" aria-label="Close">&#10005;</button></div>
+
+  <!-- PANEL 1: cart -->
+  <div class="drawer-body" id="pCart">
+    <div id="cartList"></div>
+    <div id="cartFoot" hidden>
+      <div class="total-row"><span>Subtotal</span><b id="cartTotal">0 RWF</b></div>
+      <p class="muted small">Delivery fee is confirmed by us after you order.</p>
+      <button class="btn primary wide" id="toCheckout" style="margin-top:14px">Checkout</button>
+    </div>
+  </div>
+
+  <!-- PANEL 2: checkout -->
+  <div class="drawer-body" id="pCheckout" hidden>
+    <button class="btn ghost sm" id="backCart" type="button">&larr; Back to cart</button>
+
+    <label for="cName">Full name</label>
+    <input id="cName" autocomplete="name" placeholder="e.g. Aline Uwase" maxlength="80">
+    <label for="cPhone">Phone number</label>
+    <input id="cPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0788 123 456" maxlength="20">
+    <p class="muted small" id="phoneHint">Rwandan number (MTN or Airtel). Country code +250 is added for you.</p>
+
+    <label>How do you want it?</label>
+    <div class="seg" id="seg">
+      <button type="button" class="on" data-type="delivery">&#128666; Delivery</button>
+      <button type="button" data-type="pickup">&#128717; Pickup</button>
+      <button type="button" data-type="dine_in">&#127869; Dine-in</button>
+    </div>
+
+    <div id="deliveryBox">
+      <label for="addrQ">Search your address or area</label>
+      <input id="addrQ" type="search" autocomplete="off" placeholder="e.g. Masoro, Kimironko, Remera...">
+      <div class="suggest" id="suggest"></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn ghost sm" id="geoBtn" type="button">&#128205; Use my location</button>
+      </div>
+      <div class="mapbox" id="pickMap"></div>
+      <p class="muted small">Drag the pin to your exact door or gate, then confirm.</p>
+      <label for="cAddr">Delivery address</label>
+      <textarea id="cAddr" rows="2" placeholder="Area, street, house..." maxlength="300"></textarea>
+      <button class="btn ghost wide" id="confirmLoc" type="button">&#10004; Confirm this location</button>
+      <p class="small" id="locStatus"></p>
+      <label for="cInstr">Landmark or directions (optional)</label>
+      <textarea id="cInstr" rows="2" placeholder="Blue gate, next to the pharmacy..." maxlength="500"></textarea>
+    </div>
+
+    <label>Payment method</label>
+    <div id="payMethods"></div>
+
+    <div class="total-row"><span>Subtotal</span><b id="coTotal">0 RWF</b></div>
+    <p class="muted small" id="feeNote">Delivery fee is confirmed by us after you order. You pay the final total.</p>
+    <p class="err" id="formErr" role="alert"></p>
+    <button class="btn primary wide" id="placeBtn" type="button">Place order</button>
+  </div>
+
+  <!-- PANEL 3: confirmation -->
+  <div class="drawer-body" id="pDone" hidden>
+    <div class="done">
+      <div class="done-emoji">&#127881;</div>
+      <h3>Order received!</h3>
+      <p class="ref" id="doneRef"></p>
+      <p class="muted">We will confirm your order shortly. Your payment is <b>not</b> marked as paid until we verify it.</p>
+      <div class="box" id="donePay"></div>
+      <div class="box" id="refBox" hidden>
+        <b>Already paid? Send your MoMo reference</b>
+        <input id="refInput" placeholder="e.g. 1234567890" maxlength="64" style="margin-top:8px">
+        <p class="err" id="refErr"></p>
+        <button class="btn primary wide" id="refBtn" type="button">Submit reference</button>
+      </div>
+      <a class="btn ghost wide" id="waOrder" target="_blank" rel="noopener">&#128172; Also send it on WhatsApp</a>
+      <a class="btn primary wide" id="trackLink" href="track.html">&#128666; Track my order</a>
+      <button class="btn ghost wide" id="doneClose" type="button">Back to menu</button>
+    </div>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script src="assets/core.js"></script>
+<script src="assets/store.js"></script>
+</body>
+</html>

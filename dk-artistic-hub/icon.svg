@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#4d3844"/>
+  <rect x="56" y="56" width="400" height="400" rx="110" fill="none" stroke="#f7b7e3" stroke-width="14"/>
+  <text x="256" y="320" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="210" fill="#f7b7e3">DK</text>
+</svg>

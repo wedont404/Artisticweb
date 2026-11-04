@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin - DK ARTISTIC HUB</title>
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="theme-color" content="#4d3844">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body style="padding-bottom:30px">
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="top">
+  <span class="brand"><span class="logo">DK</span><span class="brand-name">ADMIN <b>PANEL</b></span></span>
+  <div class="tools">
+    <span class="muted small" id="whoami" hidden></span>
+    <button class="tool" id="vibeBtn" aria-label="Change vibe">&#127912;</button>
+    <button class="tool" id="themeBtn" aria-label="Toggle dark or light">&#127769;</button>
+    <button class="btn ghost sm" id="logoutBtn" hidden>Sign out</button>
+  </div>
+</header>
+
+<!-- login -->
+<section class="login" id="viewLogin">
+  <div class="card">
+    <h3>Administrator sign in</h3>
+    <p class="muted small">Only authorized administrators can sign in. Customers do not have accounts.</p>
+    <form id="loginForm" novalidate>
+      <label for="lEmail">Email</label><input id="lEmail" type="email" autocomplete="username" required>
+      <label for="lPass">Password</label><input id="lPass" type="password" autocomplete="current-password" required>
+      <p class="err" id="lErr" role="alert"></p>
+      <button class="btn primary wide" id="lBtn" type="submit">Sign in</button>
+    </form>
+    <p class="center small" style="margin-top:12px"><a href="#" id="forgot" class="muted">Forgot password?</a></p>
+  </div>
+</section>
+
+<!-- set password (invite / reset link) -->
+<section class="login" id="viewSetPw" hidden>
+  <div class="card">
+    <h3>Choose your password</h3>
+    <form id="pwForm" novalidate>
+      <label for="npw">New password (min 8 characters)</label><input id="npw" type="password" autocomplete="new-password">
+      <label for="npw2">Repeat password</label><input id="npw2" type="password" autocomplete="new-password">
+      <p class="err" id="pErr" role="alert"></p>
+      <button class="btn primary wide" type="submit">Save password</button>
+    </form>
+  </div>
+</section>
+
+<!-- app -->
+<main class="admin-wrap" id="viewApp" hidden>
+  <div class="tabs" id="tabs" role="tablist">
+    <button class="on" data-tab="orders">Orders</button><button data-tab="products">Menu &amp; products</button><button data-tab="payments">Payment methods</button>
+  </div>
+
+  <section id="tabOrders">
+    <div class="stats" id="stats"></div>
+    <form class="filters" id="filters">
+      <div><label for="fSearch">Order no. or phone</label><input id="fSearch" placeholder="DK-2026-... or 0788..."></div>
+      <div><label for="fOs">Order status</label><select id="fOs"><option value="">All</option></select></div>
+      <div><label for="fPs">Payment status</label><select id="fPs"><option value="">All</option></select></div>
+      <div><label for="fFrom">From</label><input id="fFrom" type="date"></div>
+      <div><label for="fTo">To</label><input id="fTo" type="date"></div>
+      <div style="align-self:end"><button class="btn ghost wide sm" type="button" id="fClear">Clear filters</button></div>
+    </form>
+    <div class="orows" id="orows"></div>
+    <div class="pager"><button class="btn ghost sm" id="prevP">&larr; Previous</button><span class="muted small" id="pageInfo"></span><button class="btn ghost sm" id="nextP">Next &rarr;</button></div>
+  </section>
+
+  <section id="tabProducts" hidden></section>
+  <section id="tabPayments" hidden></section>
+</main>
+
+<footer class="foot">
+  <p><a href="terms.html" style="color:var(--accent);font-weight:700">Terms &amp; Conditions</a></p>
+  <p class="made">This website was happily made by <b id="creditName"></b></p>
+  <p class="muted small">&copy; <span id="year"></span> DK ARTISTIC HUB</p>
+</footer>
+
+<!-- order detail drawer -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer wide" id="drawer" aria-hidden="true">
+  <div class="drawer-head"><h3 id="dTitle">Order</h3><button class="x" id="dClose" aria-label="Close">&#10005;</button></div>
+  <div class="drawer-body" id="dBody"></div>
+</aside>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="assets/core.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>
