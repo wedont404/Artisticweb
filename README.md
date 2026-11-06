@@ -10,7 +10,12 @@ Built like SquadVault: **plain HTML + CSS + JavaScript** (no framework, no build
 
 | Page | For | What it does |
 |---|---|---|
-| `index.html` | Customers | 3D spinning menu, live menu from the database, cart, checkout with map pin, MTN code, WhatsApp |
+| `index.html` | Customers | Home: 3D spinning menu, crowd favourites, mood picker |
+| `menu.html` | Customers | Full menu with photos, categories, search |
+| `cart.html` | Customers | Cart |
+| `checkout.html` | Customers | Details, delivery map pin, payment method, place order |
+| `done.html` | Customers | Order placed: MTN code, MoMo reference, WhatsApp, tracking link |
+| `how.html` / `visit.html` | Customers | How to order; hours, map, call and WhatsApp |
 | `track.html` | Customers | Order number + phone -> live progress, rider position, payment status |
 | `admin.html` | Staff only | Sign in, dashboard, orders, payment verification, delivery tracking, menu, payment methods |
 | `terms.html` | Everyone | Terms & Conditions (linked in every footer) |
@@ -50,6 +55,9 @@ Then open the site on a phone, tap **Add to Home Screen**, and you have an app.
 
 Business details (WhatsApp number, MTN code `*182*8*016804#`, hours, map position) are at the top of `assets/core.js`.
 
+## Product photos
+Put your own JPGs in `img/menu/`, named after the item: `chicken-burger.jpg`, `dk-special-burger.jpg`, `mutzig.jpg` ... (full list in `img/menu/README.md`), then `git add img && git commit -m photos && git push`. They show on the Home ring, Menu, Cart and Checkout. A missing photo shows the item's emoji tile, so nothing looks broken. A photo uploaded in Admin -> Menu & products takes priority over the file.
+
 ## Everyday use
 - **Menu, prices, photos, sold-out:** Admin -> *Menu & products*. Photos are compressed automatically.
 - **Payment instructions:** Admin -> *Payment methods* (turn Airtel Money on when you have the details).
@@ -66,12 +74,14 @@ Business details (WhatsApp number, MTN code `*182*8*016804#`, hours, map positio
 
 ## Folder map
 ```
-index.html  track.html  admin.html  terms.html  404.html
-assets/     app.css  core.js  store.js  track.js  admin.js
+index.html menu.html cart.html checkout.html done.html how.html visit.html
+track.html admin.html terms.html 404.html
+img/menu/   your product photos (see img/menu/README.md)
+assets/     app.css core.js shop.js home.js menu.js cart.js checkout.js done.js info.js track.js admin.js
 sw.js  manifest.webmanifest  icon.svg  robots.txt  .nojekyll
 supabase/   all_in_one.sql  verify.sql  migrations/0001..0012  build.sh  apply.sh
 docs/       SDLC.md
-tests/      stub_supabase.sql  e2e/e2e_full.py
+tests/      stub_supabase.sql  smoke/smoke.py (pages)  e2e/ (older single-page version)
 ```
 After editing a file in `supabase/migrations/`, run `supabase/build.sh` to rebuild `all_in_one.sql`.
 
@@ -84,4 +94,6 @@ After editing a file in `supabase/migrations/`, run `supabase/build.sh` to rebui
 - **Kinyarwanda toggle** from the earlier WhatsApp-only version is not in this version yet.
 
 ## Tests
-`tests/e2e/e2e_full.py` drives the real pages in Chrome against a real PostgreSQL loaded with `all_in_one.sql` (65 checks: ordering, checkout rules, payment, tracking, admin, permissions). See `docs/SDLC.md` section 5.
+- `tests/smoke/smoke.py`: 44 checks on every page (phone width, footer, menu, photos and fallback, cart, checkout, order payload, done page), with a mocked Supabase.
+- `tests/e2e/e2e_full.py`: the earlier 65-check run against a real PostgreSQL (database rules, admin, tracking). It was written for the single-page storefront, so its storefront steps need updating for the new pages; the database and admin parts still apply.
+See `docs/SDLC.md` section 5.

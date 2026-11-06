@@ -217,12 +217,68 @@
     return window.L.divIcon({ className: "pin " + (cls || ""), html: "<span><em>" + emoji + "</em></span>", iconSize: [38, 38], iconAnchor: [19, 36] });
   };
 
-  /* ================= start ================= */
+  /* ================= shared page shell: header, mobile tab bar, footer (identical on every customer page) ================= */
+  var NAV = [["home", "index.html", "Home"], ["menu", "menu.html", "Menu"], ["how", "how.html", "How to order"], ["visit", "visit.html", "Visit"], ["track", "track.html", "Track order"]];
+  D.cartCount = function () {
+    try { var c = JSON.parse(D.store.get("dk_cart2", "{}")) || {}, n = 0, k; for (k in c) n += +c[k] || 0; return n; } catch (e) { return 0; }
+  };
+  D.badges = function () {
+    var n = D.cartCount();
+    D.$$(".cart-n").forEach(function (e) { e.textContent = n; if (e.classList.contains("tab-n")) e.hidden = !n; });
+  };
+  function shell() {
+    var page = document.body.getAttribute("data-page") || "", H = $("#shell-head"), F = $("#shell-foot");
+    function cur(k) { return k === page ? ' aria-current="page"' : ""; }
+    if (H) {
+      H.innerHTML = '<header class="top"><a class="brand" href="index.html" aria-label="DK Artistic Hub home"><span class="logo" id="logoTap">DK</span><span class="brand-name">ARTISTIC <b>HUB</b></span></a>' +
+        '<nav class="nav" aria-label="Main">' + NAV.map(function (n) { return '<a href="' + n[1] + '"' + cur(n[0]) + ">" + n[2] + "</a>"; }).join("") + "</nav>" +
+        '<div class="tools"><button class="tool" id="vibeBtn" title="Change vibe" aria-label="Change vibe">\u{1F3A8}</button>' +
+        '<button class="tool" id="themeBtn" title="Dark or light" aria-label="Toggle dark or light">\u{1F319}</button>' +
+        '<button class="tool" id="sizeBtn" title="Bigger text" aria-label="Bigger text">Aa</button>' +
+        '<a class="cart-btn" id="cartBtn" href="cart.html" aria-label="Open cart">\u{1F6D2} <span class="cart-n">0</span></a></div></header>' +
+        '<nav class="tabbar" aria-label="Quick menu">' +
+        '<a href="index.html"' + cur("home") + '><span class="ti">\u{1F3E0}</span>Home</a>' +
+        '<a href="menu.html"' + cur("menu") + '><span class="ti">\u{1F37D}️</span>Menu</a>' +
+        '<a href="cart.html"' + cur("cart") + '><span class="ti">\u{1F6D2}</span>Cart<b class="cart-n tab-n" hidden>0</b></a>' +
+        '<a href="track.html"' + cur("track") + '><span class="ti">\u{1F69A}</span>Track</a>' +
+        '<a href="visit.html"' + cur("visit") + '><span class="ti">\u{1F4CD}</span>Visit</a></nav>';
+    }
+    if (F) {
+      F.innerHTML = '<footer class="foot"><div class="foot-brand">DK ARTISTIC <b>HUB</b></div><p class="muted">Street food. Good vibes. Kigali.</p>' +
+        '<p class="foot-links"><a href="menu.html">Menu</a><a href="how.html">How to order</a><a href="visit.html">Visit</a><a href="track.html">Track order</a>' +
+        '<a href="terms.html" style="color:var(--accent);font-weight:700">Terms &amp; Conditions</a></p>' +
+        '<p class="made">This website was happily made by <b id="creditName"></b></p>' +
+        '<p class="muted small">&copy; <span id="year"></span> DK ARTISTIC HUB</p></footer>';
+    }
+    D.badges();
+  }
+  /* fade-in on scroll for anything with class "reveal" (call again after rendering new content) */
+  D.reveal = function () {
+    var els = D.$$(".reveal:not(.in)");
+    if (!("IntersectionObserver" in window)) { els.forEach(function (e) { e.classList.add("in"); }); return; }
+    if (!D._io) D._io = new IntersectionObserver(function (en) { en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); D._io.unobserve(x.target); } }); }, { threshold: .12 });
+    els.forEach(function (e) { D._io.observe(e); });
+  };
+  /* a product photo that is missing or broken quietly turns back into its emoji tile */
+  document.addEventListener("error", function (e) {
+    var t = e.target;
+    if (!t || t.tagName !== "IMG" || !t.hasAttribute("data-e")) return;
+    var face = t.parentNode && t.parentNode.classList && t.parentNode.classList.contains("face");
+    var s = document.createElement(face ? "div" : "span");
+    if (face) s.className = "fe";
+    s.textContent = t.getAttribute("data-e");
+    if (t.parentNode) t.parentNode.replaceChild(s, t);
+  }, true);
+
+  /* ================= start (this script is loaded at the end of <body>, so the page already exists) ================= */
   D.applyTheme();
-  document.addEventListener("DOMContentLoaded", function () {
-    bindTheme();
+  shell();
+  D.applyTheme();
+  bindTheme();
+  D.reveal();
+  (function () {
     var y = $("#year"); if (y) y.textContent = new Date().getFullYear();
     var c = $("#creditName"); if (c) c.textContent = D.credit;
     if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) navigator.serviceWorker.register("sw.js").catch(function () {});
-  });
+  })();
 })();

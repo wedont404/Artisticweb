@@ -14,19 +14,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/app.css">
 </head>
-<body style="padding-bottom:30px">
+<body data-page="track">
 <div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
-<header class="top">
-  <a class="brand" href="index.html" aria-label="Back to the menu"><span class="logo">DK</span><span class="brand-name">ARTISTIC <b>HUB</b></span></a>
-  <div class="tools">
-    <a class="btn ghost sm" href="index.html">&larr; Menu</a>
-    <button class="tool" id="vibeBtn" aria-label="Change vibe">&#127912;</button>
-    <button class="tool" id="themeBtn" aria-label="Toggle dark or light">&#127769;</button>
-  </div>
-</header>
+<div id="shell-head"></div>
 
 <main class="sec" style="max-width:820px">
-  <h2>Track your order</h2>
+  <h1 class="h1">Track your order</h1>
 
   <form class="card" id="lookup" novalidate>
     <label for="tOrder" style="margin-top:0">Order number</label>
@@ -78,8 +71,7 @@
   </section>
 </main>
 
-<footer class="foot"><p><a href="terms.html" style="color:var(--accent);font-weight:700">Terms &amp; Conditions</a></p>
-  <p class="made">This website was happily made by <b id="creditName"></b></p><p class="muted small">&copy; <span id="year"></span> DK ARTISTIC HUB</p></footer>
+<div id="shell-foot"></div>
 <div class="toast" id="toast" role="status"></div>
 <script src="assets/core.js"></script>
 <script src="assets/track.js"></script>

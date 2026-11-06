@@ -1,5 +1,5 @@
 """End-to-end test: real pages in Chrome -> mini PostgREST/GoTrue emulator -> REAL Postgres with the real all_in_one.sql."""
-import asyncio, json, re, subprocess, sys, time, urllib.parse
+import asyncio, json, os, re, subprocess, sys, time, urllib.parse
 import psycopg2, psycopg2.extras
 from playwright.async_api import async_playwright
 
@@ -126,8 +126,16 @@ RES = []
 def ok(name, cond, extra=""):
     RES.append(bool(cond)); print(("PASS " if cond else "FAIL ") + name + ("" if cond else "  -> " + str(extra)), flush=True)
 
+PHOTO = "/home/claude/project/dk-artistic-hub/img/menu/brochettes.jpg"
+def make_photo():
+    from PIL import Image, ImageDraw
+    im = Image.new("RGB", (800, 600), (200, 120, 60)); d = ImageDraw.Draw(im)
+    for i in range(0, 800, 40): d.rectangle([i, 0, i + 20, 600], fill=(170, 90, 40))
+    d.ellipse([200, 150, 600, 450], fill=(120, 50, 20)); im.save(PHOTO, "JPEG", quality=80)
+
 async def main():
-    srv = subprocess.Popen(["python3", "-m", "http.server", "8765", "--directory", "/home/claude/dk-app"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    make_photo()
+    srv = subprocess.Popen(["python3", "-m", "http.server", "8765", "--directory", "/home/claude/project/dk-artistic-hub"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(1)
     try:
         async with async_playwright() as p:
@@ -137,75 +145,125 @@ async def main():
             await other_routes(mob); await other_routes(dsk)
             errs = []
 
-            # ======================= STOREFRONT (phone) =======================
+            # ======================= STOREFRONT (phone) - separate pages =======================
             pg = await mob.new_page(); pg.on("pageerror", lambda e: errs.append("store: " + str(e)))
-            await pg.goto(SITE + "/index.html"); await pg.wait_for_selector(".item", timeout=8000); await pg.wait_for_timeout(1200)
-            ok("S1 menu loaded from the database (12 items)", await pg.locator(".item").count() == 12, await pg.locator(".item").count())
-            ok("S2 3D ring built with 8 faces", await pg.locator("#ring .face").count() == 8, await pg.locator("#ring .face").count())
-            ok("S3 no sideways scroll on phone", await pg.evaluate("document.documentElement.scrollWidth<=innerWidth+1"))
+            async def scroll_all():
+                for y in range(0, 4000, 500):
+                    await pg.evaluate(f"window.scrollTo(0,{y})"); await pg.wait_for_timeout(60)
+                await pg.evaluate("window.scrollTo(0,0)"); await pg.wait_for_timeout(500)
+            # ---- Home
+            await pg.goto(SITE + "/index.html"); await pg.wait_for_selector("#fav .item", timeout=8000); await pg.wait_for_timeout(1200)
+            ok("S1 home: 4 crowd favourites + 5 category tiles (no full menu on the home page)", await pg.locator("#fav .item").count() == 4 and await pg.locator(".cat-tile").count() == 5 and await pg.locator("#grid").count() == 0, (await pg.locator("#fav .item").count(), await pg.locator(".cat-tile").count()))
+            ok("S2 home: 3D ring built with 8 faces", await pg.locator("#ring .face").count() == 8, await pg.locator("#ring .face").count())
+            ok("S3 home: no sideways scroll on phone", await pg.evaluate("document.documentElement.scrollWidth<=innerWidth+1"))
             ok("S4 visitors send no Authorization header", all(not a for (_, pth, a) in LOG if pth.startswith("/rest/v1/")), [x for x in LOG if x[2]][:3])
-            ok("S5 live open/happy-hour chips filled", "hour" in (await pg.inner_text("#happyTxt")).lower() or "happy" in (await pg.inner_text("#happyTxt")).lower())
+            ok("S5 home: live open/happy-hour chips filled", "happy" in (await pg.inner_text("#happyTxt")).lower())
+            ok("S5b mobile tab bar visible, Home tab marked current", await pg.is_visible(".tabbar") and await pg.get_attribute('.tabbar a[href="index.html"]', "aria-current") == "page")
+            await pg.screenshot(path=SHOTS + "home.png")
+            # ---- real photos: put one real jpg in img/menu and check it shows (and every missing one falls back to its emoji)
+            await pg.goto(SITE + "/menu.html"); await pg.wait_for_selector(".item", timeout=8000); await scroll_all()
+            ok("S6 menu page: 12 items loaded from the database", await pg.locator(".item").count() == 12, await pg.locator(".item").count())
+            broken = await pg.evaluate("Array.from(document.querySelectorAll('.media img')).filter(i=>i.complete&&i.naturalWidth===0).length")
+            imgs = await pg.locator(".media img").count()
+            ok("S7 photo present -> shown as <img>; the 11 missing photos fall back to emoji (no broken images)", imgs == 1 and broken == 0, (imgs, broken))
+            ok("S7b the photo really decoded", await pg.evaluate("(()=>{var i=document.querySelector('.media img');return !!i&&i.naturalWidth>=400})()"))
+            await pg.screenshot(path=SHOTS + "menu.png")
             await pg.click('[data-cat]:has-text("Beers")'); await pg.wait_for_timeout(200)
-            ok("S6 category filter Beers -> 3", await pg.locator(".item").count() == 3)
+            ok("S8 category filter Beers -> 3", await pg.locator(".item").count() == 3)
             await pg.click('[data-cat="all"]'); await pg.fill("#search", "burger"); await pg.wait_for_timeout(200)
-            ok("S7 search burger -> 2", await pg.locator(".item").count() == 2)
+            ok("S9 search burger -> 2", await pg.locator(".item").count() == 2)
             await pg.fill("#search", "")
             async def add(name, times=1):
                 for _ in range(times):
                     card = pg.locator(".item", has=pg.locator("h3", has_text=re.compile("^" + re.escape(name) + "$")))
                     btn = card.locator("[data-add],[data-inc]").first; await btn.click(); await pg.wait_for_timeout(120)
             await add("Brochettes", 2); await add("Loaded Fries")
-            ok("S8 cart total 4,500 RWF (2x1000 + 2500)", "4,500" in await pg.inner_text("#fabTotal"), await pg.inner_text("#fabTotal"))
-            await pg.reload(); await pg.wait_for_selector(".item"); await pg.wait_for_timeout(800)
-            ok("S9 cart survives refresh", (await pg.inner_text("#fabCount")) == "3")
-            await pg.click("#fab"); await pg.click("#toCheckout"); await pg.wait_for_timeout(600)
-            await pg.click("#placeBtn"); ok("S10 empty name blocked", "name" in (await pg.inner_text("#formErr")).lower())
+            ok("S10 cart badge in the tab bar shows 3", (await pg.inner_text(".tab-n")) == "3", await pg.inner_text(".tab-n"))
+            # ---- Cart page
+            await pg.click('.tabbar a[href="cart.html"]'); await pg.wait_for_url("**/cart.html"); await pg.wait_for_selector(".line", timeout=6000)
+            ok("S11 cart is its own page: 2 lines, subtotal 4,500 RWF", await pg.locator(".line").count() == 2 and "4,500" in await pg.inner_text("#cartTotal"), await pg.inner_text("#cartTotal"))
+            ok("S11b cart line for Brochettes shows its photo", await pg.locator('.line .th img').count() == 1)
+            await pg.locator('.line', has_text="Loaded Fries").locator("[data-inc]").click(); await pg.wait_for_timeout(200)
+            ok("S11c cart stepper updates the total (7,000)", "7,000" in await pg.inner_text("#cartTotal"), await pg.inner_text("#cartTotal"))
+            await pg.locator('.line', has_text="Loaded Fries").locator("[data-dec]").click(); await pg.wait_for_timeout(200)
+            await pg.reload(); await pg.wait_for_selector(".line"); ok("S12 cart survives refresh", "4,500" in await pg.inner_text("#cartTotal"))
+            # ---- Checkout page
+            await pg.click('a:has-text("Checkout")'); await pg.wait_for_url("**/checkout.html"); await pg.wait_for_selector("#coBox:not([hidden])", timeout=8000); await pg.wait_for_timeout(500)
+            await pg.click("#placeBtn"); ok("S13 empty name blocked", "name" in (await pg.inner_text("#formErr")).lower())
             await pg.fill("#cName", "Aline Uwase"); await pg.fill("#cPhone", "123"); await pg.click("#placeBtn")
-            ok("S11 bad phone blocked", "phone" in (await pg.inner_text("#formErr")).lower())
+            ok("S14 bad phone blocked", "phone" in (await pg.inner_text("#formErr")).lower())
             await pg.fill("#cPhone", "0788 123 456"); await pg.click("#placeBtn")
-            ok("S12 delivery without confirmed location blocked", "confirm" in (await pg.inner_text("#formErr")).lower(), await pg.inner_text("#formErr"))
+            ok("S15 delivery without confirmed location blocked", "confirm" in (await pg.inner_text("#formErr")).lower(), await pg.inner_text("#formErr"))
             await pg.wait_for_selector("#pickMap.leaflet-container", timeout=6000)
-            await pg.click("#confirmLoc"); ok("S13 confirm before moving pin is refused", "pin" in (await pg.inner_text("#locStatus")).lower(), await pg.inner_text("#locStatus"))
+            await pg.click("#confirmLoc"); ok("S16 confirm before moving pin is refused", "pin" in (await pg.inner_text("#locStatus")).lower(), await pg.inner_text("#locStatus"))
             await pg.fill("#addrQ", "kimiron"); await pg.wait_for_selector("#suggest button", timeout=6000); await pg.click("#suggest button")
-            ok("S14 address suggestion fills the address", "Kimironko" in await pg.input_value("#cAddr"))
+            ok("S17 address suggestion fills the address", "Kimironko" in await pg.input_value("#cAddr"))
             await pg.fill("#cInstr", "Blue gate near the pharmacy"); await pg.click("#confirmLoc")
-            ok("S15 location confirmed with coordinates", "-1.94000" in await pg.inner_text("#locStatus"), await pg.inner_text("#locStatus"))
-            ok("S16 payment methods = MTN + cash (Airtel is off)", await pg.locator(".paymeth").count() == 2, await pg.locator(".paymeth").count())
+            ok("S18 location confirmed with coordinates", "-1.94000" in await pg.inner_text("#locStatus"), await pg.inner_text("#locStatus"))
+            ok("S19 payment methods = MTN + cash (Airtel is off)", await pg.locator(".paymeth").count() == 2, await pg.locator(".paymeth").count())
+            ok("S19b checkout shows the order summary with the same total", "4,500" in await pg.inner_text("#coTotal") and await pg.locator("#coItems .line").count() == 2)
             await pg.screenshot(path=SHOTS + "checkout.png")
-            await pg.click("#placeBtn"); await pg.wait_for_selector("#pDone:not([hidden])", timeout=8000)
+            await pg.click("#placeBtn"); await pg.wait_for_url("**/done.html", timeout=9000); await pg.wait_for_selector("#doneRef")
             ref1 = (await pg.inner_text("#doneRef")).split(" ")[0]
-            ok("S17 order placed, number from the database", re.fullmatch(r"DK-\d{4}-\d{5}", ref1), ref1)
+            ok("S20 order placed -> own 'Order received' page, number from the database", re.fullmatch(r"DK-\d{4}-\d{5}", ref1), ref1)
             row = q("select order_status,payment_status,subtotal,delivery_latitude,delivery_longitude,customer_phone,delivery_instructions from orders where order_number=%s", (ref1,))[0]
-            ok("S18 stored pending/unpaid, 4500, exact GPS, +250 phone", row[0] == "pending" and row[1] == "unpaid" and float(row[2]) == 4500 and abs(row[3] + 1.94) < 1e-6 and row[5] == "+250788123456" and row[6], row)
-            ok("S19 MTN code + dial/copy shown after ordering", "*182*8*016804#" in await pg.inner_text("#donePay") and await pg.locator('a[href^="tel:%2A182"]').count() >= 1)
-            ok("S20 WhatsApp link carries the order number", ref1 in urllib.parse.unquote(await pg.get_attribute("#waOrder", "href")))
-            await pg.fill("#refInput", "a b!"); await pg.click("#refBtn"); ok("S21 bad reference rejected", "4-64" in await pg.inner_text("#refErr"), await pg.inner_text("#refErr"))
+            ok("S21 stored pending/unpaid, 4500, exact GPS, +250 phone", row[0] == "pending" and row[1] == "unpaid" and float(row[2]) == 4500 and abs(row[3] + 1.94) < 1e-6 and row[5] == "+250788123456" and row[6], row)
+            ok("S21b cart emptied after ordering", await pg.evaluate("DK.cartCount()") == 0)
+            ok("S22 MTN code + dial/copy shown after ordering", "*182*8*016804#" in await pg.inner_text("#donePay") and await pg.locator('a[href^="tel:%2A182"]').count() >= 1)
+            ok("S23 WhatsApp link carries the order number", ref1 in urllib.parse.unquote(await pg.get_attribute("#waOrder", "href")))
+            await pg.reload(); await pg.wait_for_selector("#doneRef")
+            ok("S23b done page survives a refresh", (await pg.inner_text("#doneRef")).startswith(ref1))
+            await pg.fill("#refInput", "a b!"); await pg.click("#refBtn"); ok("S24 bad reference rejected", "4-64" in await pg.inner_text("#refErr"), await pg.inner_text("#refErr"))
             await pg.fill("#refInput", "MP20261104AB"); await pg.click("#refBtn"); await pg.wait_for_timeout(800)
             pr = q("select p.payment_status,o.payment_status,p.payment_reference from payments p join orders o on o.id=p.order_id where o.order_number=%s", (ref1,))[0]
-            ok("S22 reference -> pending_verification (never paid)", pr[0] == "pending_verification" and pr[1] == "pending_verification" and pr[2] == "MP20261104AB", pr)
+            ok("S25 reference -> pending_verification (never paid)", pr[0] == "pending_verification" and pr[1] == "pending_verification" and pr[2] == "MP20261104AB", pr)
             await pg.screenshot(path=SHOTS + "done.png")
-            # idempotency straight against the API
             k = "idem-test-1"
             def mk(): return {"p_customer_name": "Dup Test", "p_customer_phone": "0731112233", "p_fulfillment_type": "pickup", "p_delivery_address": None, "p_delivery_latitude": None, "p_delivery_longitude": None, "p_google_place_id": None, "p_delivery_instructions": None, "p_items": [{"product_id": q("select id::text from products where name='Mutzig'")[0][0], "quantity": 1}], "p_payment_method": "cash_on_delivery", "p_idempotency_key": k}
             a1 = await pg.evaluate("(a)=>DK.api.rpc('create_order',a)", mk()); a2 = await pg.evaluate("(a)=>DK.api.rpc('create_order',a)", mk())
-            ok("S23 duplicate submission returns the same order", a1["order_number"] == a2["order_number"] and a2.get("replayed") is True, (a1, a2))
-            # sold-out while in cart
-            await pg.click("#doneClose"); await add("Street Fries")
+            ok("S26 duplicate submission returns the same order", a1["order_number"] == a2["order_number"] and a2.get("replayed") is True, (a1, a2))
+            # ---- sold out while in the cart
+            await pg.goto(SITE + "/menu.html"); await pg.wait_for_selector(".item"); await add("Street Fries")
             q("update products set is_available=false where name='Street Fries'")
-            await pg.click("#fab"); await pg.click("#toCheckout"); await pg.wait_for_timeout(300)
-            await pg.click('#seg [data-type="pickup"]'); await pg.click("#placeBtn"); await pg.wait_for_timeout(900)
-            ok("S24 sold-out item blocked with a clear message", "unavailable" in (await pg.inner_text("#formErr")).lower(), await pg.inner_text("#formErr"))
-            ok("S25 cart pruned after menu refresh", (await pg.inner_text("#fabCount")) == "0", await pg.inner_text("#fabCount"))
+            await pg.goto(SITE + "/checkout.html"); await pg.wait_for_selector("#coBox:not([hidden])", timeout=8000)
+            # cached menu is refreshed on load, so the sold-out item is pruned before the form even shows
+            gone = await pg.is_visible("#coEmpty")
+            if not gone:
+                await pg.fill("#cName", "Sold Out"); await pg.fill("#cPhone", "0788000111"); await pg.click('#seg [data-type="pickup"]'); await pg.click("#placeBtn"); await pg.wait_for_timeout(900)
+                gone = await pg.is_visible("#coEmpty")
+            ok("S27 sold-out item is refused and removed; the cart ends up empty with a clear message", gone, await pg.inner_text("main"))
+            ok("S28 cart badge back to 0", await pg.evaluate("DK.cartCount()") == 0)
             q("update products set is_available=true where name='Street Fries'")
-            # pickup + cash order (no map needed)
-            await pg.reload(); await pg.wait_for_selector(".item"); await add("Street Fries"); await pg.click("#fab"); await pg.click("#toCheckout"); await pg.wait_for_timeout(300)
-            await pg.click('#seg [data-type="pickup"]'); ok("S26 pickup hides the map section", not await pg.is_visible("#deliveryBox"))
-            await pg.check('input[name="pm"][value="cash_on_delivery"]'); await pg.click("#placeBtn"); await pg.wait_for_selector("#pDone:not([hidden])", timeout=8000)
+            # ---- pickup + cash order (no map needed)
+            await pg.goto(SITE + "/menu.html"); await pg.wait_for_selector(".item"); await add("Street Fries")
+            await pg.goto(SITE + "/checkout.html"); await pg.wait_for_selector("#coBox:not([hidden])", timeout=8000)
+            ok("S29 checkout remembers name + phone from last time", await pg.input_value("#cName") == "Aline Uwase")
+            await pg.click('#seg [data-type="pickup"]'); ok("S30 pickup hides the map section", not await pg.is_visible("#deliveryBox"))
+            await pg.check('input[name="pm"][value="cash_on_delivery"]'); await pg.click("#placeBtn"); await pg.wait_for_url("**/done.html", timeout=9000); await pg.wait_for_selector("#doneRef")
             ref2 = (await pg.inner_text("#doneRef")).split(" ")[0]
-            ok("S27 pickup/cash order placed, no reference box", re.fullmatch(r"DK-\d{4}-\d{5}", ref2) and await pg.is_hidden("#refBox"), ref2)
+            ok("S31 pickup/cash order placed, no reference box", re.fullmatch(r"DK-\d{4}-\d{5}", ref2) and await pg.is_hidden("#refBox"), ref2)
             await pg.click("#trackLink"); await pg.wait_for_selector("#result:not([hidden])", timeout=6000)
-            ok("S28 tracking opens from the link, waits for confirmation", await pg.is_visible("#waiting") and await pg.is_hidden("#trackBox"))
+            ok("S32 tracking opens from the link, waits for confirmation", await pg.is_visible("#waiting") and await pg.is_hidden("#trackBox"))
             await pg.screenshot(path=SHOTS + "track_wait.png")
+            # ---- other pages + every page has the shared header / footer
+            ok("S33 empty cart page + empty checkout page are friendly", True)
+            await pg.goto(SITE + "/cart.html"); await pg.wait_for_selector(".cart-empty"); ok("S33a empty cart shows a button to the menu", await pg.locator('.cart-empty a[href="menu.html"]').count() == 1)
+            await pg.goto(SITE + "/checkout.html"); await pg.wait_for_selector("#coEmpty:not([hidden])", timeout=6000); ok("S33b checkout with an empty cart does not show the form", await pg.is_hidden("#coBox"))
+            await pg.goto(SITE + "/done.html"); await pg.evaluate("localStorage.removeItem('dk_done')"); await pg.reload(); ok("S33c order-placed page without an order is friendly", await pg.is_visible("#doneNone") and await pg.is_hidden("#doneBox"))
+            await pg.goto(SITE + "/how.html"); await pg.wait_for_selector("#ussdText"); ok("S34 how-to-order page shows the MTN code + dial link", "*182*8*016804#" in await pg.inner_text("#ussdText") and await pg.locator('#dialBtn[href^="tel:%2A182"]').count() == 1)
+            await pg.goto(SITE + "/visit.html"); await pg.wait_for_selector("#visitMap.leaflet-container", timeout=6000); ok("S35 visit page: map, phone, WhatsApp, hours", "Masoro" in await pg.inner_text("#vArea") and "wa.me/250782292053" in await pg.get_attribute("#waBtn", "href") and "10:00" in await pg.inner_text("#vHours"))
+            titles = set(); allok = True; bad = []
+            for pth in ["index", "menu", "cart", "checkout", "done", "how", "visit", "track", "terms"]:
+                await pg.goto(SITE + f"/{pth}.html"); await pg.wait_for_timeout(250)
+                foot = await pg.inner_text("footer.foot"); t = await pg.title(); titles.add(t)
+                good = "Terms & Conditions" in foot and "This website was happily made by WecodeNo 404-tresor" in foot and await pg.locator('footer.foot a[href="terms.html"]').count() == 1 and await pg.locator("header.top .nav a").count() == 5
+                if not good: allok = False; bad.append(pth)
+            ok("S36 all 9 customer pages: shared header + T&C link + 'happily made by' footer", allok, bad)
+            ok("S37 every page has its own title", len(titles) == 9, titles)
+            await pg.goto(SITE + "/admin.html"); ok("S38 admin page footer has T&C + made-by too", "Terms & Conditions" in await pg.inner_text("footer.foot") and "happily made by" in await pg.inner_text("footer.foot"))
+            dp = await dsk.new_page(); await dp.goto(SITE + "/menu.html"); await dp.wait_for_selector(".item")
+            ok("S39 desktop: top nav shown, mobile tab bar hidden, Menu marked current", await dp.is_visible("header.top .nav") and await dp.is_hidden(".tabbar") and await dp.get_attribute('header.top .nav a[href="menu.html"]', "aria-current") == "page")
+            await dp.screenshot(path=SHOTS + "menu_desktop.png"); await dp.close()
 
             # ======================= ADMIN (desktop) =======================
             ad = await dsk.new_page(); ad.on("pageerror", lambda e: errs.append("admin: " + str(e)))
@@ -304,6 +362,8 @@ async def main():
             await b.close()
     finally:
         srv.terminate()
+        try: os.remove(PHOTO)
+        except OSError: pass
     print(f"\n{sum(RES)}/{len(RES)} passed"); sys.exit(0 if all(RES) else 1)
 
 asyncio.run(main())

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Visit us - DK ARTISTIC HUB</title>
+<meta name="description" content="Find DK Artistic Hub in Masoro, Kigali: hours, map, phone and WhatsApp.">
+<meta name="theme-color" content="#4d3844">
+<meta property="og:title" content="Visit us - DK ARTISTIC HUB">
+<meta property="og:description" content="Find DK Artistic Hub in Masoro, Kigali: hours, map, phone and WhatsApp.">
+<meta property="og:type" content="restaurant">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Restaurant","name":"DK ARTISTIC HUB","servesCuisine":["Street food","Brochettes","Burgers"],"telephone":"+250782292053","address":{"@type":"PostalAddress","addressLocality":"Masoro, Kigali","addressCountry":"RW"},"geo":{"@type":"GeoCoordinates","latitude":-1.93246,"longitude":30.14608},"openingHours":"Mo-Su 10:00-23:00","priceRange":"RWF","acceptsReservations":false}
+</script>
+</head>
+<body data-page="visit">
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="shell-head"></div>
+
+<main>
+<section class="page-head"><h1>Come hang out</h1><p>Find us in Masoro, Kigali.</p></section>
+<section class="sec" style="padding-top:22px">
+  <div class="bento three">
+    <div class="card reveal"><h3>&#128205; Where</h3><p id="vArea"></p><p class="muted small" id="vPlus"></p><a class="btn ghost" id="mapBtn" target="_blank" rel="noopener">Open in Google Maps</a></div>
+    <div class="card reveal"><h3>&#128346; Hours</h3><p id="vHours"></p><p class="muted small">&#127865; Happy hour: <span id="vHappy"></span></p></div>
+    <div class="card reveal"><h3>&#128222; Call or WhatsApp</h3><p id="vPhone"></p><div class="row"><a class="btn ghost" id="callBtn">Call</a><a class="btn primary" id="waBtn" target="_blank" rel="noopener">WhatsApp</a></div></div>
+  </div>
+  <div class="mapbox tall reveal" id="visitMap" aria-label="Map of DK Artistic Hub"></div>
+</section>
+</main>
+
+<div id="shell-foot"></div>
+<div class="toast" id="toast" role="status"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script src="assets/core.js"></script>
+<script src="assets/info.js"></script>
+</body>
+</html>

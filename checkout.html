@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checkout - DK ARTISTIC HUB</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Complete your DK Artistic Hub order.">
+<meta name="theme-color" content="#4d3844">
+<meta property="og:title" content="Checkout - DK ARTISTIC HUB">
+<meta property="og:description" content="Complete your DK Artistic Hub order.">
+<meta property="og:type" content="restaurant">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="cart">
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="shell-head"></div>
+
+<main>
+<section class="page-head"><h1>Checkout</h1><p><a href="cart.html" style="color:var(--accent);font-weight:700">&larr; Back to cart</a></p></section>
+<section class="sec" style="padding-top:22px">
+  <div id="coLoad"><div class="skel" style="height:240px"></div></div>
+  <div id="coEmpty" class="card center" hidden><div style="font-size:3rem">&#128722;</div><p id="coEmptyMsg">Your cart is empty.</p><a class="btn primary" href="menu.html">Browse the menu</a></div>
+
+  <div class="co" id="coBox" hidden>
+    <div class="card">
+      <h3>Your details</h3>
+      <label for="cName">Full name</label>
+      <input id="cName" autocomplete="name" placeholder="e.g. Aline Uwase" maxlength="80">
+      <label for="cPhone">Phone number</label>
+      <input id="cPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0788 123 456" maxlength="20">
+      <p class="muted small" id="phoneHint">Rwandan number (MTN or Airtel). Country code +250 is added for you.</p>
+
+      <label>How do you want it?</label>
+      <div class="seg" id="seg">
+        <button type="button" class="on" data-type="delivery">&#128666; Delivery</button>
+        <button type="button" data-type="pickup">&#128717; Pickup</button>
+        <button type="button" data-type="dine_in">&#127869; Dine-in</button>
+      </div>
+
+      <div id="deliveryBox">
+        <label for="addrQ">Search your address or area</label>
+        <input id="addrQ" type="search" autocomplete="off" placeholder="e.g. Masoro, Kimironko, Remera...">
+        <div class="suggest" id="suggest"></div>
+        <div class="row" style="margin-top:8px"><button class="btn ghost sm" id="geoBtn" type="button">&#128205; Use my location</button></div>
+        <div class="mapbox" id="pickMap"></div>
+        <p class="muted small">Drag the pin to your exact door or gate, then confirm.</p>
+        <label for="cAddr">Delivery address</label>
+        <textarea id="cAddr" rows="2" placeholder="Area, street, house..." maxlength="300"></textarea>
+        <button class="btn ghost wide" id="confirmLoc" type="button">&#10004; Confirm this location</button>
+        <p class="small" id="locStatus"></p>
+        <label for="cInstr">Landmark or directions (optional)</label>
+        <textarea id="cInstr" rows="2" placeholder="Blue gate, next to the pharmacy..." maxlength="500"></textarea>
+      </div>
+
+      <label>Payment method</label>
+      <div id="payMethods"></div>
+      <p class="muted small" style="margin-top:8px">Not sure how MoMo works here? <a href="how.html" style="color:var(--accent);font-weight:700">Read how to pay</a>.</p>
+    </div>
+
+    <aside class="card">
+      <h3>Your order</h3>
+      <div id="coItems"></div>
+      <div class="total-row"><span>Subtotal</span><b id="coTotal">0 RWF</b></div>
+      <p class="muted small" id="feeNote">Delivery fee is confirmed by us after you order. You pay the final total.</p>
+      <p class="err" id="formErr" role="alert"></p>
+      <button class="btn primary wide" id="placeBtn" type="button">Place order</button>
+    </aside>
+  </div>
+</section>
+</main>
+
+<div id="shell-foot"></div>
+<div class="toast" id="toast" role="status"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script src="assets/core.js"></script>
+<script src="assets/shop.js"></script>
+<script src="assets/checkout.js"></script>
+</body>
+</html>

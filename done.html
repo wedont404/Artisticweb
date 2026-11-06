@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order placed - DK ARTISTIC HUB</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Your DK Artistic Hub order was received.">
+<meta name="theme-color" content="#4d3844">
+<meta property="og:title" content="Order placed - DK ARTISTIC HUB">
+<meta property="og:description" content="Your DK Artistic Hub order was received.">
+<meta property="og:type" content="restaurant">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="cart">
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="shell-head"></div>
+
+<main>
+<section class="sec" style="max-width:640px">
+  <div id="doneNone" class="card center" hidden><p>No recent order found on this phone.</p><a class="btn primary" href="menu.html">Browse the menu</a> <a class="btn ghost" href="track.html">Track an order</a></div>
+  <div class="card done" id="doneBox">
+    <div class="done-emoji">&#127881;</div>
+    <h1 class="done-h">Order received!</h1>
+    <p class="ref" id="doneRef"></p>
+    <p class="muted">We will confirm your order shortly. Your payment is <b>not</b> marked as paid until we verify it.</p>
+    <div class="box" id="donePay"></div>
+    <div class="box" id="refBox" hidden>
+      <b>Already paid? Send your MoMo reference</b>
+      <input id="refInput" placeholder="e.g. 1234567890" maxlength="64" style="margin-top:8px">
+      <p class="err" id="refErr"></p>
+      <button class="btn primary wide" id="refBtn" type="button">Submit reference</button>
+    </div>
+    <a class="btn ghost wide" id="waOrder" target="_blank" rel="noopener">&#128172; Also send it on WhatsApp</a>
+    <a class="btn primary wide" id="trackLink" href="track.html">&#128666; Track my order</a>
+    <a class="btn ghost wide" href="menu.html">Back to the menu</a>
+  </div>
+</section>
+</main>
+
+<div id="shell-foot"></div>
+<div class="toast" id="toast" role="status"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script src="assets/core.js"></script>
+<script src="assets/done.js"></script>
+</body>
+</html>

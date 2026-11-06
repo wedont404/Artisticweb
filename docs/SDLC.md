@@ -77,7 +77,8 @@ Stack: plain HTML + CSS + JavaScript, Supabase (PostgreSQL + Auth + Storage), Gi
 ### Architecture
 ```
 Browser (static files on GitHub Pages)
- ├─ index.html + store.js    menu, cart, checkout, confirmation
+ ├─ index / menu / cart / checkout / done / how / visit .html
+ │   shop.js (menu + cart shared), home.js, menu.js, cart.js, checkout.js, done.js, info.js
  ├─ track.html + track.js    customer tracking
  ├─ admin.html + admin.js    staff dashboard (sign in required)
  └─ core.js                  config, API helper (plain fetch), maps, theme

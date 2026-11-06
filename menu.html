@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Menu - DK ARTISTIC HUB</title>
+<meta name="description" content="The full DK Artistic Hub menu: brochettes, burgers, fries, beers and cocktails in Masoro, Kigali.">
+<meta name="theme-color" content="#4d3844">
+<meta property="og:title" content="Menu - DK ARTISTIC HUB">
+<meta property="og:description" content="The full DK Artistic Hub menu: brochettes, burgers, fries, beers and cocktails in Masoro, Kigali.">
+<meta property="og:type" content="restaurant">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="menu">
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="shell-head"></div>
+
+<main>
+<section class="page-head"><h1>Our street menu</h1><p>Fresh off the grill. Tap + to add, then check out in a few taps. <span id="count" class="muted small"></span></p></section>
+<section class="sec" style="padding-top:22px">
+  <div class="menu-tools">
+    <input id="search" type="search" placeholder="Search food or drinks..." aria-label="Search menu">
+    <div class="cats" id="cats" role="tablist" aria-label="Categories"></div>
+  </div>
+  <p class="muted small" id="menuNote" hidden></p>
+  <div class="grid" id="grid" aria-live="polite"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  <p class="center" style="margin-top:26px"><a class="btn primary" href="cart.html">&#128722; Go to my cart</a></p>
+</section>
+</main>
+
+<div id="shell-foot"></div>
+<div class="toast" id="toast" role="status"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script src="assets/core.js"></script>
+<script src="assets/shop.js"></script>
+<script src="assets/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-theme="dark" data-vibe="plum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How to order - DK ARTISTIC HUB</title>
+<meta name="description" content="How to order from DK Artistic Hub and pay with MTN Mobile Money.">
+<meta name="theme-color" content="#4d3844">
+<meta property="og:title" content="How to order - DK ARTISTIC HUB">
+<meta property="og:description" content="How to order from DK Artistic Hub and pay with MTN Mobile Money.">
+<meta property="og:type" content="restaurant">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body data-page="how">
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="shell-head"></div>
+
+<main>
+<section class="page-head"><h1>How to order</h1><p>Order in 3 taps. No account needed.</p></section>
+<section class="sec" style="padding-top:22px">
+  <div class="steps">
+    <div class="card step reveal"><b>1</b><h3>Pick your food</h3><p>Add items to your cart on the menu page, then choose delivery, pickup or dine-in at checkout.</p></div>
+    <div class="card step reveal"><b>2</b><h3>Pin your spot</h3><p>Search your area or drop a pin on the map so the rider finds your exact door.</p></div>
+    <div class="card step reveal"><b>3</b><h3>Pay and track</h3><p>Pay with MTN Mobile Money or cash, then follow your order live on the Track page.</p></div>
+  </div>
+  <div class="card pay reveal">
+    <div>
+      <p class="pill">&#128179; MTN Mobile Money</p>
+      <h3 style="margin-top:10px">Pay with this code</h3>
+      <div class="code" id="ussdText"></div>
+      <p class="muted small">Pay after we confirm your order and total. Keep the MoMo SMS as proof, then send us the transaction reference. Never share your MoMo PIN with anyone.</p>
+    </div>
+    <div class="pay-btns">
+      <a class="btn primary" id="dialBtn" href="#">&#128222; Dial to pay</a>
+      <button class="btn ghost" id="copyBtn">&#128203; Copy code</button>
+    </div>
+  </div>
+  <div class="cta" style="margin-top:26px;justify-content:flex-start">
+    <a class="btn primary" href="menu.html">Start ordering</a>
+    <a class="btn ghost" href="track.html">&#128666; Track my order</a>
+  </div>
+</section>
+</main>
+
+<div id="shell-foot"></div>
+<div class="toast" id="toast" role="status"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<script src="assets/core.js"></script>
+<script src="assets/info.js"></script>
+</body>
+</html>
