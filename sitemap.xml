@@ -1,18 +1,20 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://artsticdk.wedont404.workers.dev/</loc>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://artsticdk.wedont404.workers.dev/menu.html</loc>
+    <loc>https://artsticdk.wedont404.workers.dev/menu</loc>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://artsticdk.wedont404.workers.dev/how.html</loc>
+    <loc>https://artsticdk.wedont404.workers.dev/how</loc>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://artsticdk.wedont404.workers.dev/visit.html</loc>
+    <loc>https://artsticdk.wedont404.workers.dev/visit</loc>
     <priority>0.8</priority>
   </url>
 </urlset>
