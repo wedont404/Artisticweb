@@ -1,3 +1,4 @@
+# Updated to refresh the sitemap directive
 User-agent: *
 Allow: /
 
