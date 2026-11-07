@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+
 Disallow: /admin.html
 Disallow: /track.html
+
+Sitemap: https://artsticdk.wedont404.workers.dev/sitemap.xml
